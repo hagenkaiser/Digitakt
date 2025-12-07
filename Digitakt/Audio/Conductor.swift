@@ -2,26 +2,42 @@ import AudioKit
 import AVFoundation
 
 /// Main audio conductor for the Digitakt instrument.
-/// This will be expanded to include custom voice engine, sample slicing, and sequencer.
+/// Manages the audio engine and voice playback.
 class Conductor: ObservableObject {
     let engine = AudioEngine()
 
-    // Placeholder for future audio chain
-    // Phase 1B will add: Voice engine with AVAudioPlayerNode
-    // Phase 1D will add: Sample slicing (Grid machine)
-    // Phase 1E will add: Filter and envelope
+    // Voice engine
+    private var voice: SporthVoice?
 
     @Published var isRunning = false
 
     init() {
-        // For now, just set up a silent output
-        // This will be replaced with actual audio chain in Phase 1B
-        engine.output = Mixer()
+        setupAudioChain()
+    }
+
+    private func setupAudioChain() {
+        // Get sample URL from SampleManager
+        let sampleURL = SampleManager.shared.getSampleURL(named: "square")
+
+        // Create voice with sample URL
+        voice = SporthVoice(sampleURL: sampleURL)
+
+        // Connect voice to engine output
+        if let voiceNode = voice?.node {
+            engine.output = voiceNode
+        } else {
+            Log("Conductor: No voice node available, using silent mixer")
+            engine.output = Mixer() // Silent fallback
+        }
     }
 
     func start() {
         do {
             try engine.start()
+
+            // Start the voice (if needed)
+            voice?.start()
+
             isRunning = true
             Log("Digitakt engine started")
         } catch {
@@ -30,7 +46,18 @@ class Conductor: ObservableObject {
     }
 
     func stop() {
+        voice?.stop()
         engine.stop()
         isRunning = false
+    }
+
+    /// Trigger the voice to play the loaded sample
+    func triggerVoice() {
+        voice?.trigger()
+    }
+
+    /// Set playback rate (1.0 = original speed, 2.0 = double speed, etc.)
+    func setPlaybackRate(_ rate: Float) {
+        voice?.setPlaybackRate(rate)
     }
 }

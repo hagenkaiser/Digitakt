@@ -144,12 +144,14 @@ public class DigitaktAUv3AudioUnit: AUAudioUnit {
             confirmEngineStarted = true
         }
 
-        // Voice playback will be added in Phase 1B
-        Log("MIDI Note On: \(noteNumber) velocity: \(velocity)")
+        // Trigger the voice on any MIDI note
+        conductor.triggerVoice()
+        Log("MIDI Note On: \(noteNumber) velocity: \(velocity) - triggered voice")
     }
 
     func receivedMIDINoteOff(noteNumber: MIDINoteNumber, channel: MIDIChannel, offset: MIDITimeStamp) {
-        // Voice note-off will be added in Phase 1B
+        // Note-off not needed for one-shot sample playback
+        // Will be used for sustained voices in future
         Log("MIDI Note Off: \(noteNumber)")
     }
 

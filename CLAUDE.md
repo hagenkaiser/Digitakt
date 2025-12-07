@@ -10,13 +10,21 @@ This project aims to create an AUv3 (Audio Unit v3) instrument plugin for iOS/ma
 
 ## Development Workflow
 
-**IMPORTANT**: Always use the AUv3 agent team for development tasks on this project:
-- **auv3-coordinator** - Orchestrate multi-agent development, project creation
-- **auv3-architect** - Design signal flow, parameters, project structure
-- **auv3-dsp-engineer** - Implement audio DSP with AudioKit
-- **auv3-ui-designer** - Create hardware-inspired SwiftUI interfaces
-- **auv3-integrator** - Wire DSP and UI together, AUv3 boilerplate
-- **auv3-product-manager** - Brainstorm features, manage GitHub issues
+### ⚠️ MANDATORY: USE AGENTS FOR ALL DEVELOPMENT TASKS ⚠️
+
+**DO NOT write code directly.** Always delegate to the appropriate agent:
+
+| Task Type | Agent to Use |
+|-----------|--------------|
+| Audio DSP, sample playback, filters, effects | `auv3-dsp-engineer` |
+| SwiftUI views, knobs, pads, visual design | `auv3-ui-designer` |
+| Connecting DSP ↔ UI, AUv3 boilerplate, MIDI | `auv3-integrator` |
+| Architecture decisions, signal flow design | `auv3-architect` |
+| Feature ideas, GitHub issues, product specs | `auv3-product-manager` |
+
+**Before writing ANY Swift code, ask yourself: "Which agent should handle this?"**
+
+**Skills available:** Use `audiokit-dsp` skill for AudioKit/SporthAudioKit API reference.
 
 Use `/create-auv3` command for new project scaffolding.
 
@@ -25,6 +33,7 @@ Use `/create-auv3` command for new project scaffolding.
 Located in `docs/`:
 - **[AUv3_Feasibility_Assessment.md](docs/AUv3_Feasibility_Assessment.md)** - Architecture analysis, phased development plan, technical decisions
 - **[Elektron_Workflow_AUv3_Reference.md](docs/Elektron_Workflow_AUv3_Reference.md)** - Comprehensive feature breakdown (sequencer, p-locks, trig conditions)
+- **[SporthAudioKit_DSP_Reference.md](docs/SporthAudioKit_DSP_Reference.md)** - Sporth operations for sample playback, filters, envelopes, voice architecture
 - **[Tonverk_Panel_Layout_Reference.md](docs/Tonverk_Panel_Layout_Reference.md)** - Hardware UI reference with control mappings
 - **Digitakt_II_Manual.txt** / **Tonverk-User-Manual.txt** - Full manual text extracts
 - **Tonverk_pages_14-15-014_FrontPanel.png** - Front panel image for UI reference
@@ -45,8 +54,23 @@ Located in `docs/`:
 - **Language**: Swift
 - **UI**: SwiftUI
 
+## Build Commands
+
+```bash
+# Build standalone app for iOS Simulator
+xcodebuild -scheme Digitakt -destination 'platform=iOS Simulator,OS=18.1,name=iPad Pro 11-inch (M4)' build
+
+# Build AUv3 extension
+xcodebuild -scheme DigitaktAUv3 -destination 'platform=iOS Simulator,OS=18.1,name=iPad Pro 11-inch (M4)' build
+
+# List available simulators
+xcrun simctl list devices available | grep iPad
+```
+
 ## Important Rules
 
+- **ALWAYS use the AUv3 agents for development tasks - DO NOT write code directly**
+- **Always announce which agent you're delegating to before spawning it** (e.g., "This is a DSP task, delegating to auv3-dsp-engineer")
 - Never commit without explicit user approval
 - Never provide timeline estimates (days, weeks, months) - AI estimates are unreliable
 - Focus on concrete implementation steps and milestones, not when they'll be done

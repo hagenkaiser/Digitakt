@@ -112,7 +112,13 @@ struct DigitaktMainView: View {
             Spacer()
 
             // 16 Trig Pads - horizontal row at bottom
-            TrigPadRow(trigStates: $trigStates, availableWidth: size.width)
+            TrigPadRow(
+                trigStates: $trigStates,
+                availableWidth: size.width,
+                onPadTap: { _ in
+                    conductor.triggerVoice()
+                }
+            )
                 .padding(.horizontal, 8)
                 .padding(.bottom, 12)
         }

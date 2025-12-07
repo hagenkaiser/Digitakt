@@ -4,6 +4,7 @@ import SwiftUI
 struct TrigPadRow: View {
     @Binding var trigStates: [Bool]
     let availableWidth: CGFloat
+    var onPadTap: ((Int) -> Void)? = nil
 
     // Calculate pad size based on available width
     // 16 pads + 15 gaps (2pt each) + 16pt horizontal padding
@@ -24,6 +25,7 @@ struct TrigPadRow: View {
                     size: padSize,
                     onTap: {
                         trigStates[index].toggle()
+                        onPadTap?(index)
                     }
                 )
             }
