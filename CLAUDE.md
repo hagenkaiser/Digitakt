@@ -36,3 +36,5 @@ Located in `docs/`:
 ## Important Rules
 
 - Never commit without explicit user approval
+- Never provide timeline estimates (days, weeks, months) - AI estimates are unreliable
+- Focus on concrete implementation steps and milestones, not when they'll be done

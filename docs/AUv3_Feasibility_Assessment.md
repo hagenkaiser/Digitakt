@@ -4,10 +4,7 @@
 
 This is a **highly ambitious but achievable** project. The Digitakt workflow is sophisticated, but the core concepts map well to modern iOS audio architecture.
 
-**Estimated complexity**:
-- Solo developer (experienced): 12-18 months to v1.0
-- Small team (2-3 people): 6-12 months to v1.0
-- MVP demo (Phase 1): 2-3 months
+**Complexity**: High - requires custom audio engine, sequencer, and UI
 
 ### Critical Success Factors
 - **Strong points**: AudioKit 5 + AVAudioEngine provide solid foundation
@@ -104,11 +101,15 @@ ParameterLockResolver
 ```
 Conductor (owns AudioEngine)
   └── TrackVoice[8]
-        ├── VoicePool (2-4 voices per track for retrigs)
-        │     ├── SamplePlayer (AudioKit AVAudioPlayerNode)
-        │     ├── Filter (AudioKit Node)
-        │     ├── AmplitudeEnvelope
+        ├── Voice (dynamic allocation, no artificial limits)
+        │     ├── AVAudioPlayerNode (with scheduleSegment for slicing)
+        │     ├── LowPassFilter (AudioKit)
+        │     ├── AmplitudeEnvelope (AudioKit)
         │     └── LFO → modulation router
+        │
+        ├── SlicedSample (metadata for slice boundaries)
+        │     ├── Zero-crossing detector
+        │     └── SliceDefinition[] (start/end frames)
         │
         ├── TrackEffects (bit crusher, overdrive, decimator)
         ├── SendFX routing (to global reverb/delay)
@@ -185,27 +186,34 @@ class InternalClock: ClockSource {
 
 **Key insight**: Schedule triggers slightly ahead (10-20ms lookahead), then send sample-accurate events to audio thread.
 
-### Decision 3: Voice Management for Retrigs
+### Decision 3: Voice Management
 
-**Problem**: A single step with 4 retrigs needs 4 simultaneous voices
+**Problem**: Need to handle retrigs and polyphonic playback
 
-**Solution**: Pre-allocated voice pool per track
+**Solution**: Dynamic voice allocation (no artificial limits)
 
 ```swift
 class TrackVoice {
-    let maxPolyphony = 4 // Per track
-    var voices: [Voice] = []
-    var nextVoiceIndex: Int = 0
+    var activeVoices: [Voice] = []
 
-    func triggerNote(sample: Sample, parameters: ParameterSnapshot) {
-        let voice = voices[nextVoiceIndex]
-        voice.start(sample: sample, parameters: parameters)
-        nextVoiceIndex = (nextVoiceIndex + 1) % maxPolyphony
+    func triggerNote(sample: SlicedSample, sliceIndex: Int, parameters: ParameterSnapshot) {
+        let voice = Voice()
+        voice.trigger(
+            sample: sample.audioFile,
+            startFrame: sample.slices[sliceIndex].startFrame,
+            frameCount: sample.slices[sliceIndex].frameCount,
+            parameters: parameters
+        )
+        activeVoices.append(voice)
+    }
+
+    func cleanupFinishedVoices() {
+        activeVoices.removeAll { $0.isFinished }
     }
 }
-
-// Total voices: 8 tracks × 4 = 32 voices max
 ```
+
+Modern iOS devices have ample resources - no need for artificial voice limits.
 
 ### Decision 4: Real-Time Safety for Parameter Application
 
@@ -280,18 +288,38 @@ class EventQueue {
 
 ## 6. MVP Feature Set (Recommended Phasing)
 
-### Phase 1: Core Audio Engine (2-3 months)
+### Phase 1: Core Audio Engine
 - Single track sample playback
+- **Sample slicing (Grid machine)** - auto-slice samples, trigger individual slices
 - Basic 16-step sequencer (no p-locks yet)
 - Internal clock only
 - Velocity-sensitive triggering
 - Simple filter + amp envelope
 - Host as AUv3 instrument
-- Minimal UI: 16 pads, play/stop, tempo
+- Minimal UI: 16 pads, play/stop, tempo, slice controls
 
-**Deliverable**: Can trigger samples in a DAW, sounds good
+**Deliverable**: Can trigger samples and slices in a DAW, sounds good
 
-### Phase 2: Parameter Locks (2-3 months)
+#### Key Architecture Decision: Custom Voice Engine
+Using custom AVAudioPlayerNode-based voice engine instead of DunneAudioKit Sampler:
+- **Why**: DunneAudioKit lacks programmatic start/end point control for slicing
+- **Approach**: `AVAudioPlayerNode.scheduleSegment()` for frame-accurate slice playback
+- **Signal chain**: AVAudioPlayerNode → AudioKit LowPassFilter → AudioKit AmplitudeEnvelope → TrackMixer
+
+#### Sample Slicing (Grid Machine) Scope
+**Include in Phase 1**:
+- Even grid slicing (GRID: 4, 8, 16, 32, 64)
+- Zero-crossing detection for click-free cuts
+- SLICE parameter (select which slice to play)
+- LEN parameter (consecutive slices)
+- MIDI note to slice mapping
+
+**Defer**:
+- Transient detection (auto-detect drum hits)
+- Manual slice point editing
+- Individual slice tuning/reverse
+
+### Phase 2: Parameter Locks
 - Parameter lock storage system
 - Lock/unlock parameters per step
 - Visual feedback for locked steps
@@ -301,7 +329,7 @@ class EventQueue {
 
 **Deliverable**: Digitakt-style sequences with evolving parameters
 
-### Phase 3: Multi-Track + Host Sync (2 months)
+### Phase 3: Multi-Track + Host Sync
 - 8 independent tracks
 - Per-track mute/solo
 - Host tempo sync
@@ -311,7 +339,7 @@ class EventQueue {
 
 **Deliverable**: Full drum machine with DAW integration
 
-### Phase 4: Advanced Sequencer Features (2 months)
+### Phase 4: Advanced Sequencer Features
 - Trig conditions (probability, fill mode)
 - Micro timing per step
 - Retrigs (1/1 to 1/32)
@@ -321,7 +349,7 @@ class EventQueue {
 
 **Deliverable**: Professional-grade sequencer
 
-### Phase 5: Effects + Polish (2 months)
+### Phase 5: Effects + Polish
 - Send effects (reverb, delay, chorus)
 - Per-track effect routing
 - Master compressor/limiter
