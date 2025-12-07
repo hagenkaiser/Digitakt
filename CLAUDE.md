@@ -6,7 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This project aims to create an AUv3 (Audio Unit v3) instrument plugin for iOS/macOS that captures the workflow and feel of Elektron hardware sequencers, specifically the Digitakt II and Tonverk.
 
-**Current Status**: Pre-development/research phase. No code exists yet - only reference documentation.
+**Current Status**: Phase 1 in progress - AUv3 shell with 16-step trig pad UI complete.
+
+## Development Workflow
+
+**IMPORTANT**: Always use the AUv3 agent team for development tasks on this project:
+- **auv3-coordinator** - Orchestrate multi-agent development, project creation
+- **auv3-architect** - Design signal flow, parameters, project structure
+- **auv3-dsp-engineer** - Implement audio DSP with AudioKit
+- **auv3-ui-designer** - Create hardware-inspired SwiftUI interfaces
+- **auv3-integrator** - Wire DSP and UI together, AUv3 boilerplate
+- **auv3-product-manager** - Brainstorm features, manage GitHub issues
+
+Use `/create-auv3` command for new project scaffolding.
 
 ## Reference Documentation
 

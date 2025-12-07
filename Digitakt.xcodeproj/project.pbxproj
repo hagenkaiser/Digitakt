@@ -16,6 +16,7 @@
 		5A1FBF2127E364DB000AD8AC /* DigitaktUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1FBF2027E364DB000AD8AC /* DigitaktUITestsLaunchTests.swift */; };
 		5A1FBF3027E3651D000AD8AC /* ParameterSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1FBF2E27E3651C000AD8AC /* ParameterSlider.swift */; };
 		5A1FBF3A27E36690000AD8AC /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 5A1FBF3927E36690000AD8AC /* Sounds */; };
+		TRIGPADB127E36869000AD8AC /* TrigPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = TRIGPAD127E36869000AD8AC /* TrigPad.swift */; };
 		5A1FBF5527E367F2000AD8AC /* AudioUnitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1FBF5427E367F2000AD8AC /* AudioUnitViewController.swift */; };
 		5A1FBF5727E367F2000AD8AC /* DigitaktAUv3AudioUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1FBF5627E367F2000AD8AC /* DigitaktAUv3AudioUnit.swift */; };
 		5A1FBF5D27E367F2000AD8AC /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A1FBF5B27E367F2000AD8AC /* MainInterface.storyboard */; };
@@ -88,6 +89,7 @@
 		5A1FBF6C27E36869000AD8AC /* Conductor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conductor.swift; sourceTree = "<group>"; };
 		DIGT000027E36869000AD8AC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5AB954252BEE68EF00808A9D /* DigitaktEXSAUv3View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitaktEXSAUv3View.swift; sourceTree = "<group>"; };
+		TRIGPAD127E36869000AD8AC /* TrigPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrigPad.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,14 +154,63 @@
 			isa = PBXGroup;
 			children = (
 				5A1FBF3B27E3675C000AD8AC /* Info.plist */,
-				5A1FBF0327E364DA000AD8AC /* DigitaktApp.swift */,
-				DIGT000027E36869000AD8AC /* ContentView.swift */,
-				5A1FBF6C27E36869000AD8AC /* Conductor.swift */,
-				5A1FBF2E27E3651C000AD8AC /* ParameterSlider.swift */,
+				DIGITAPP27E364DA000AD8AC /* App */,
+				DIGITAUD27E364DA000AD8AC /* Audio */,
+				DIGITUI127E364DA000AD8AC /* UI */,
+				DIGITMOD27E364DA000AD8AC /* Models */,
+				DIGITSHA27E364DA000AD8AC /* Shared */,
 				5A1FBF0727E364DB000AD8AC /* Assets.xcassets */,
 				5A1FBF0927E364DB000AD8AC /* Preview Content */,
 			);
 			path = Digitakt;
+			sourceTree = "<group>";
+		};
+		DIGITAPP27E364DA000AD8AC /* App */ = {
+			isa = PBXGroup;
+			children = (
+				5A1FBF0327E364DA000AD8AC /* DigitaktApp.swift */,
+				DIGT000027E36869000AD8AC /* ContentView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		DIGITAUD27E364DA000AD8AC /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				5A1FBF6C27E36869000AD8AC /* Conductor.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		DIGITUI127E364DA000AD8AC /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				DIGITCOM27E364DA000AD8AC /* Components */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		DIGITCOM27E364DA000AD8AC /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				TRIGPAD127E36869000AD8AC /* TrigPad.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		DIGITMOD27E364DA000AD8AC /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DIGITSHA27E364DA000AD8AC /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				5A1FBF2E27E3651C000AD8AC /* ParameterSlider.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		5A1FBF0927E364DB000AD8AC /* Preview Content */ = {
@@ -390,6 +441,7 @@
 				5A1FBF6D27E36869000AD8AC /* Conductor.swift in Sources */,
 				5A1FBF0427E364DA000AD8AC /* DigitaktApp.swift in Sources */,
 				DIGT000127E36869000AD8AC /* ContentView.swift in Sources */,
+				TRIGPADB127E36869000AD8AC /* TrigPad.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
