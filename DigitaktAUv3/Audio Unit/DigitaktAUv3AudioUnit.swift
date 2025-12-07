@@ -144,8 +144,8 @@ public class DigitaktAUv3AudioUnit: AUAudioUnit {
             confirmEngineStarted = true
         }
 
-        // Trigger the voice on any MIDI note
-        conductor.triggerVoice()
+        // Route through unified MIDI receiver
+        conductor.receiveMIDINoteOn(noteNumber: noteNumber, velocity: velocity)
         Log("MIDI Note On: \(noteNumber) velocity: \(velocity) - triggered voice")
     }
 

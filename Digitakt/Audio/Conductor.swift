@@ -51,8 +51,23 @@ class Conductor: ObservableObject {
         isRunning = false
     }
 
-    /// Trigger the voice to play the loaded sample
-    func triggerVoice() {
+    // MARK: - MIDI Interface
+
+    /// Receive MIDI note-on events and trigger the voice.
+    /// This is the unified entry point for all MIDI triggering (UI, sequencer, external MIDI).
+    /// - Parameters:
+    ///   - noteNumber: MIDI note number (0-127)
+    ///   - velocity: MIDI velocity (0-127)
+    func receiveMIDINoteOn(noteNumber: UInt8, velocity: UInt8) {
+        // For now, any MIDI note triggers the single voice
+        // Future: multi-track will map note ranges to different tracks
+        triggerVoice()
+    }
+
+    // MARK: - Internal Voice Control
+
+    /// Trigger the voice to play the loaded sample (internal use)
+    private func triggerVoice() {
         voice?.trigger()
     }
 

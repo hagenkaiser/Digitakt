@@ -116,7 +116,8 @@ struct DigitaktMainView: View {
                 trigStates: $trigStates,
                 availableWidth: size.width,
                 onPadTap: { _ in
-                    conductor.triggerVoice()
+                    // Send MIDI note-on (note 60 = middle C, velocity 127 = full)
+                    conductor.receiveMIDINoteOn(noteNumber: 60, velocity: 127)
                 }
             )
                 .padding(.horizontal, 8)
